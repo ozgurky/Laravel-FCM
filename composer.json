@@ -1,6 +1,6 @@
 {
-    "name": "brozot/laravel-fcm",
-    "description": "Laravel / Lumen package for Firebase Cloud Messaging ",
+    "name": "ozgurky/laravel-fcm",
+    "description": "Laravel / Lumen package for Firebase Cloud Messaging (forked from brozot/laravel-fcm) ",
     "keywords": ["laravel", "lumen", "firebase", "notification", "push", "fcm", "firebase cloud messaging"],
     "type": "library",
     "license": "MIT",
@@ -8,6 +8,10 @@
         {
             "name": "Nicolas Brosy",
             "email": "nicolas.brosy@gmail.com"
+        },
+        {
+            "name": "Özgür Kaya",
+            "email": "ozgurkaya001@gmail.com"
         }
     ],
     "require": {
