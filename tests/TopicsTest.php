@@ -68,6 +68,39 @@ class TopicsTest extends FCMTestCase
     /**
      * @test
      */
+    public function it_has_two_topics_not_and()
+    {
+        $target = [
+            'condition' => "'firstTopic' in topics && !('secondTopic' in topics)",
+        ];
+
+        $topics = new Topics();
+
+        $topics->topic('firstTopic')->andNotTopic('secondTopic');
+
+        $this->assertEquals($target, $topics->build());
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_two_topics_not_or()
+    {
+        $target = [
+            'condition' => "'firstTopic' in topics || !('secondTopic' in topics)",
+        ];
+
+        $topics = new Topics();
+
+        $topics->topic('firstTopic')->orNotTopic('secondTopic');
+
+        $this->assertEquals($target, $topics->build());
+    }
+
+
+    /**
+     * @test
+     */
     public function it_has_two_topics_or_and_one_and()
     {
         $target = [
@@ -77,6 +110,22 @@ class TopicsTest extends FCMTestCase
         $topics = new Topics();
 
         $topics->topic('firstTopic')->orTopic('secondTopic')->andTopic('thirdTopic');
+
+        $this->assertEquals($target, $topics->build());
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_two_topics_not_or_and_one_and()
+    {
+        $target = [
+            'condition' => "'firstTopic' in topics || !('secondTopic' in topics) && 'thirdTopic' in topics",
+        ];
+
+        $topics = new Topics();
+
+        $topics->topic('firstTopic')->orNotTopic('secondTopic')->andTopic('thirdTopic');
 
         $this->assertEquals($target, $topics->build());
     }
@@ -99,6 +148,30 @@ class TopicsTest extends FCMTestCase
                ->orTopic(function ($condition) {
                    $condition->topic('TopicD')->andTopic('TopicE');
                });
+               
+
+        $this->assertEquals($target, $topics->build());
+    }
+
+    /**
+     * @test
+     */
+    public function it_has_a_complex_topic_condition_with_not()
+    {
+        $target = [
+            'condition' => "'TopicA' in topics && ('TopicB' in topics || 'TopicC' in topics) || !('TopicD' in topics && 'TopicE' in topics)",
+        ];
+
+        $topics = new Topics();
+
+        $topics->topic('TopicA')
+               ->andTopic(function ($condition) {
+                   $condition->topic('TopicB')->orTopic('TopicC');
+               })
+               ->orNotTopic(function ($condition) {
+                   $condition->topic('TopicD')->andTopic('TopicE');
+               });
+    
 
         $this->assertEquals($target, $topics->build());
     }

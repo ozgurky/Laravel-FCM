@@ -102,6 +102,49 @@ class Topics
     }
 
     /**
+     * Add an and not condition to the precedent topic set.
+     *
+     * Parenthesis is a closure
+     *
+     * Equivalent of this: **'TopicA' in topic' && !('TopicB' in topics)**
+     *
+     * ```
+     *          $topic = new Topics();
+     *          $topic->topic('TopicA')
+     *                ->andNotTopic('TopicB');
+     * ```
+     *
+     * Equivalent of this: **'TopicA' in topics || !('TopicB' in topics && 'TopicC' in topics)**
+     *
+     * ```
+     *          $topic = new Topics();
+     *          $topic->topic('TopicA')
+     *                ->andNotTopic(function($condition) {
+     *                      $condition->topic('TopicB')->AndTopic('TopicC');
+     *          });
+     * ```
+     *
+     * > Note: Only two operators per expression are supported by fcm
+     *
+     * @param string|Closure $first topicName or closure
+     *
+     * @return Topics
+     */
+    public function andNotTopic($first)
+    {
+        return $this->on($first, ' && !');
+    }
+
+    /**
+     * @param string|Closure $first topicName or closure
+     * @return Topics
+     */
+    public function orNotTopic($first)
+    {
+        return $this->on($first, ' || !');
+    }
+
+    /**
      * @internal
      *
      * @param $first
@@ -183,7 +226,11 @@ class Topics
 
             if (array_key_exists('first', $partial)) {
                 $topic = $partial['first'];
-                $condition .= "'$topic' in topics";
+                $conditionText = "'$topic' in topics";
+                if (isset($partial['condition']) && ends_with($partial['condition'], '!')) {
+                    $conditionText = "($conditionText)";
+                }
+                $condition .= $conditionText;
             }
 
             if (array_key_exists('open_parenthesis', $partial)) {
