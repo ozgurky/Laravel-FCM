@@ -1,0 +1,10 @@
+# Basic set up for three package managers
+
+version: 2
+updates:
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target: test-me
